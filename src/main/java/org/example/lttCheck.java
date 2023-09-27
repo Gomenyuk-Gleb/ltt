@@ -19,24 +19,27 @@ public class lttCheck {
     public void testLtt() {
         driver = Main.init(driver);
         wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        while (true) {
+            driver.get("https://ltt.rocks/login");
+            visibilityOfElementLocated("//input [@id = 'username']").sendKeys("adminuser");
+            visibilityOfElementLocated("//input [@id = 'password']").sendKeys("pass");
+            visibilityOfElementLocated("//input [@type = 'submit']").click();
 
-        driver.get("https://ltt.rocks/login");
-        visibilityOfElementLocated("//input [@id = 'username']").sendKeys("adminuser");
-        visibilityOfElementLocated("//input [@id = 'password']").sendKeys("pass");
-        visibilityOfElementLocated("//input [@type = 'submit']").click();
+            Assert.assertTrue(visibilityOfElementLocated("//div [@id = 'linkList_wrapper']").isDisplayed());
 
-        Assert.assertTrue(visibilityOfElementLocated("//div [@id = 'linkList_wrapper']").isDisplayed());
+            visibilityOfElementLocated("//button [contains (@class,  'user-area__menu-button')]").click();
+            visibilityOfElementLocated("//a [@href = '/logout']").click();
 
-        visibilityOfElementLocated("//button [contains (@class,  'user-area__menu-button')]").click();
-        visibilityOfElementLocated("//a [@href = '/logout']").click();
+            Assert.assertTrue(visibilityOfElementLocated("//input [@id = 'username']").isDisplayed());
 
-        Assert.assertTrue(visibilityOfElementLocated("//input [@id = 'username']").isDisplayed());
-
-        driver.manage().deleteAllCookies();
-        driver.navigate().refresh();
+            driver.manage().deleteAllCookies();
+            driver.navigate().refresh();
+        }
     }
 
     private WebElement visibilityOfElementLocated(String locator) {
+        wait.until(ExpectedConditions.elementToBeClickable(By.xpath(locator)));
         return wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(locator)));
+
     }
 }
